@@ -126,5 +126,65 @@
   }
   html {
     @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Animated background gradients                                        */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --bg-gradient: linear-gradient(180deg, #E8F4FD 0%, #B8D9F8 50%, #D4EAFF 100%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Star field animation (night mode)                                    */
+/* ------------------------------------------------------------------ */
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.4); }
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: twinkle var(--duration, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* ------------------------------------------------------------------ */
+/* Glassmorphism utility classes                                         */
+/* ------------------------------------------------------------------ */
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+.glass-dark {
+  background: rgba(15, 20, 40, 0.55);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion                                                        */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .star {
+    animation: none;
+    opacity: 0.6;
   }
 }
