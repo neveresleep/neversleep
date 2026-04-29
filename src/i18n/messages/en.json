@@ -1,0 +1,26 @@
+{
+  "home": {
+    "title": "neversleep",
+    "subtitle": "AI for your task",
+    "searchPlaceholder": "Find a guide for your task...",
+    "sections": {
+      "fresh": "Fresh",
+      "byTool": "By tool",
+      "guides": "Guides"
+    }
+  },
+  "groups": {
+    "text": "Content",
+    "visual": "Visual",
+    "work": "Work",
+    "automate": "Automate",
+    "nocode": "No-code"
+  },
+  "post": {
+    "related": "Related",
+    "readTime": "min"
+  },
+  "nav": {
+    "about": "About"
+  }
+}

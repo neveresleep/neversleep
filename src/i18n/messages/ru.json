@@ -1,0 +1,26 @@
+{
+  "home": {
+    "title": "neversleep",
+    "subtitle": "ИИ под твою задачу",
+    "searchPlaceholder": "Найди гайд под свою задачу...",
+    "sections": {
+      "fresh": "Свежее",
+      "byTool": "По инструментам",
+      "guides": "Гайды"
+    }
+  },
+  "groups": {
+    "text": "Тексты",
+    "visual": "Визуал",
+    "work": "Работа",
+    "automate": "Автоматизации",
+    "nocode": "Без кода"
+  },
+  "post": {
+    "related": "Похожее",
+    "readTime": "мин"
+  },
+  "nav": {
+    "about": "О проекте"
+  }
+}
