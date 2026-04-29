@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import type { PostType } from '@/lib/types';
 import type { Post } from '@/lib/types';
 
@@ -13,23 +16,17 @@ const TYPE_STYLES: Record<PostType, string> = {
   list:   'bg-orange-100 text-orange-700',
 };
 
-const TYPE_LABELS: Record<PostType, string> = {
-  guide:  'гайд',
-  review: 'обзор',
-  case:   'кейс',
-  list:   'подборка',
-};
-
 interface TypeBadgeProps {
   type: PostType;
 }
 
 export function TypeBadge({ type }: TypeBadgeProps) {
+  const t = useTranslations('post');
   return (
     <span
       className={`inline-flex items-center rounded-full px-3 py-1 text-[12px] font-semibold uppercase tracking-widest ${TYPE_STYLES[type]}`}
     >
-      {TYPE_LABELS[type]}
+      {t(`typesLower.${type}`)}
     </span>
   );
 }
@@ -81,6 +78,7 @@ interface PostCardProps {
 }
 
 function PostCard({ post, locale }: PostCardProps) {
+  const t = useTranslations('post');
   const href = locale === 'ru' ? `/p/${post.slug}` : `/${locale}/p/${post.slug}`;
   return (
     <Link
@@ -97,7 +95,7 @@ function PostCard({ post, locale }: PostCardProps) {
         {post.description}
       </p>
       <div className="mt-auto pt-2 text-[12px] text-gray-400">
-        {post.readingTime} мин
+        {post.readingTime} {t('readTime')}
       </div>
     </Link>
   );
@@ -113,11 +111,12 @@ interface RelatedPostsProps {
 }
 
 export function RelatedPosts({ posts, locale }: RelatedPostsProps) {
+  const t = useTranslations('post');
   if (posts.length === 0) return null;
   return (
     <section className="mt-16 border-t border-gray-100 pt-12">
       <h2 className="mb-6 text-xl font-bold tracking-tight text-gray-900">
-        Похожее
+        {t('related')}
       </h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (

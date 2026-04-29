@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState, useCallback } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import PostCard from '@/components/post/PostCard';
 import PostCardSkeleton from '@/components/ui/PostCardSkeleton';
 import AnimatedBackground from '@/components/home/AnimatedBackground';
@@ -117,6 +118,7 @@ function SearchPageContent() {
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
   const isDev = process.env.NODE_ENV !== 'production';
+  const t = useTranslations('search');
 
   const initialQuery = searchParams.get('q') ?? '';
 
@@ -247,7 +249,7 @@ function SearchPageContent() {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             className="text-[32px] font-bold leading-[1.2] tracking-[-0.02em] text-[#0F1724] dark:text-white mb-8"
           >
-            Поиск
+            {t('title')}
           </motion.h1>
 
           {/* ------ Search input ------ */}
@@ -257,9 +259,9 @@ function SearchPageContent() {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
             className="mb-8"
           >
-            <div role="search" aria-label="Поиск по сайту" className="relative w-full max-w-[680px]">
+            <div role="search" aria-label={t('ariaLabel')} className="relative w-full max-w-[680px]">
               <label htmlFor="search-input" className="sr-only">
-                Поиск по сайту
+                {t('ariaLabel')}
               </label>
 
               <motion.div
@@ -292,7 +294,7 @@ function SearchPageContent() {
                   onKeyDown={handleKeyDown}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  placeholder="Введите запрос..."
+                  placeholder={t('placeholder')}
                   autoComplete="off"
                   autoFocus
                   spellCheck={false}
@@ -322,7 +324,7 @@ function SearchPageContent() {
                     backdropFilter: 'blur(8px)',
                   }}
                 >
-                  Поиск в dev режиме — используется текстовый fallback (Pagefind недоступен без билда)
+                  {t('devBanner')}
                 </div>
               </motion.div>
             )}
@@ -341,7 +343,7 @@ function SearchPageContent() {
               >
                 {totalResults === 0
                   ? null
-                  : `Найдено ${totalResults} ${pluralResults(totalResults)}`}
+                  : `${t('found', { count: totalResults, declension: pluralResults(totalResults, locale, t) })}`}
               </motion.p>
             )}
           </AnimatePresence>
@@ -376,7 +378,7 @@ function SearchPageContent() {
                 className="py-20 text-center"
               >
                 <p className="text-[18px] font-semibold text-[#0F1724]/60 dark:text-white/50 mb-2">
-                  Ничего не найдено по запросу
+                  {t('empty')}
                 </p>
                 <p className="text-[15px] text-[#0F1724]/40 dark:text-white/35">
                   &laquo;{query}&raquo;
@@ -396,7 +398,7 @@ function SearchPageContent() {
                 transition={{ duration: 0.3 }}
                 className="py-20 text-center text-[15px] text-[#0F1724]/40 dark:text-white/35"
               >
-                Введите запрос, чтобы найти статьи
+                {t('idle')}
               </motion.div>
             )}
           </AnimatePresence>
@@ -444,10 +446,15 @@ function SearchPageContent() {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function pluralResults(n: number): string {
+type TFunction = ReturnType<typeof useTranslations<'search'>>;
+
+function pluralResults(n: number, locale: string, t: TFunction): string {
+  if (locale !== 'ru') {
+    return n === 1 ? t('result1') : t('result2');
+  }
   const mod10 = n % 10;
   const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return 'результат';
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'результата';
-  return 'результатов';
+  if (mod10 === 1 && mod100 !== 11) return t('result1');
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return t('result2');
+  return t('result5');
 }

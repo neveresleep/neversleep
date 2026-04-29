@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import type { Post } from '@/lib/types';
 import type { GroupKey } from '@/lib/groups';
 import { TASK_GROUPS } from '@/lib/groups';
@@ -41,14 +42,14 @@ const containerVariants = {
 };
 
 export default function PostFeed({ posts, locale, selectedGroup }: PostFeedProps) {
+  const t = useTranslations('home');
+
   const filteredPosts = useMemo(() => {
     if (!selectedGroup) return posts;
     const tasks = TASK_GROUPS[selectedGroup].tasks as readonly string[];
     return posts.filter((p) => tasks.includes(p.task));
   }, [posts, selectedGroup]);
 
-  // `posts` arrive already sorted desc by date from getPostsByLocale().
-  // For the "Свежее" tab we just take the most recent slice.
   const freshPosts = useMemo(() => filteredPosts.slice(0, 30), [filteredPosts]);
 
   const guidePosts = useMemo(
@@ -59,24 +60,24 @@ export default function PostFeed({ posts, locale, selectedGroup }: PostFeedProps
   const byToolMap = useMemo(() => groupPostsByTool(filteredPosts), [filteredPosts]);
 
   return (
-    <section aria-label="Лента постов" className="w-full max-w-5xl mx-auto px-4 sm:px-6">
+    <section aria-label={t('feedAriaLabel')} className="w-full max-w-5xl mx-auto px-4 sm:px-6">
       <Tabs defaultValue="fresh">
         <TabsList
           variant="line"
           className="mb-8 gap-6 border-b border-white/20 dark:border-white/10 w-full rounded-none justify-start"
         >
           <TabsTrigger value="fresh" className="text-[15px] pb-2 px-0">
-            Свежее
+            {t('sections.fresh')}
           </TabsTrigger>
           <TabsTrigger value="byTool" className="text-[15px] pb-2 px-0">
-            По инструментам
+            {t('sections.byTool')}
           </TabsTrigger>
           <TabsTrigger value="guides" className="text-[15px] pb-2 px-0">
-            Гайды
+            {t('sections.guides')}
           </TabsTrigger>
         </TabsList>
 
-        {/* --- Свежее --- */}
+        {/* --- Fresh --- */}
         <TabsContent value="fresh">
           {freshPosts.length === 0 ? (
             <EmptyState />
@@ -99,14 +100,14 @@ export default function PostFeed({ posts, locale, selectedGroup }: PostFeedProps
           )}
         </TabsContent>
 
-        {/* --- По инструментам --- */}
+        {/* --- By tool --- */}
         <TabsContent value="byTool">
           {byToolMap.size === 0 ? (
             <EmptyState />
           ) : (
             <div className="flex flex-col gap-10">
               {Array.from(byToolMap.entries()).map(([tool, toolPosts]) => (
-                <section key={tool} aria-label={`Инструмент: ${tool}`}>
+                <section key={tool} aria-label={`${tool}`}>
                   <h3 className="text-[20px] font-bold tracking-[-0.02em] text-[#0F1724] dark:text-white mb-4 capitalize">
                     {tool}
                   </h3>
@@ -131,7 +132,7 @@ export default function PostFeed({ posts, locale, selectedGroup }: PostFeedProps
           )}
         </TabsContent>
 
-        {/* --- Гайды --- */}
+        {/* --- Guides --- */}
         <TabsContent value="guides">
           {guidePosts.length === 0 ? (
             <EmptyState />
@@ -159,9 +160,10 @@ export default function PostFeed({ posts, locale, selectedGroup }: PostFeedProps
 }
 
 function EmptyState() {
+  const t = useTranslations('home');
   return (
     <div className="py-16 text-center text-[15px] text-[#0F1724]/50 dark:text-white/40">
-      Здесь пока пусто. Заходи позже — мы работаем.
+      {t('empty')}
     </div>
   );
 }

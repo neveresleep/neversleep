@@ -3,15 +3,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { TASK_GROUPS, type GroupKey } from '@/lib/groups';
-
-const GROUP_LABELS: Record<GroupKey, string> = {
-  text: 'Тексты',
-  visual: 'Визуал',
-  work: 'Работа',
-  automate: 'Автоматизации',
-  nocode: 'Без кода',
-};
 
 interface TaskGroupPillsProps {
   onGroupSelect: (group: GroupKey | null) => void;
@@ -23,6 +16,7 @@ export default function TaskGroupPills({
   selectedGroup,
 }: TaskGroupPillsProps) {
   const shouldReduceMotion = useReducedMotion();
+  const t = useTranslations('groups');
   const [internalSelected, setInternalSelected] = useState<GroupKey | null>(null);
 
   const activeGroup =
@@ -37,7 +31,7 @@ export default function TaskGroupPills({
   }
 
   return (
-    <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label="Фильтр по группам задач">
+    <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label={t('filterAriaLabel')}>
       {(Object.keys(TASK_GROUPS) as GroupKey[]).map((key) => {
         const isSelected = activeGroup === key;
         return (
@@ -86,7 +80,7 @@ export default function TaskGroupPills({
             }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.15 }}
           >
-            {GROUP_LABELS[key]}
+            {t(key)}
           </motion.button>
         );
       })}

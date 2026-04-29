@@ -5,13 +5,9 @@ import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
-const PLACEHOLDER_TEXTS = [
-  'как сделать пост в инстаграм через ИИ...',
-  'автоматизировать email-рассылку...',
-  'написать контент-план за 10 минут...',
-  'обработать фото без Photoshop...',
-];
+const PLACEHOLDER_COUNT = 4;
 
 interface HeroSearchProps {
   locale: string;
@@ -20,6 +16,7 @@ interface HeroSearchProps {
 export default function HeroSearch({ locale }: HeroSearchProps) {
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
+  const t = useTranslations('home');
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -27,7 +24,7 @@ export default function HeroSearch({ locale }: HeroSearchProps) {
   useEffect(() => {
     if (shouldReduceMotion) return;
     const interval = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDER_TEXTS.length);
+      setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDER_COUNT);
     }, 3000);
     return () => clearInterval(interval);
   }, [shouldReduceMotion]);
@@ -43,14 +40,21 @@ export default function HeroSearch({ locale }: HeroSearchProps) {
     if (e.key === 'Enter') handleSubmit();
   }
 
+  const placeholders = [
+    t('placeholder0'),
+    t('placeholder1'),
+    t('placeholder2'),
+    t('placeholder3'),
+  ];
+
   return (
     <div
       role="search"
-      aria-label="Поиск гайдов"
+      aria-label={t('searchAriaLabel')}
       className="relative w-[min(680px,90vw)]"
     >
       <label htmlFor="hero-search" className="sr-only">
-        Поиск гайдов по ИИ
+        {t('searchLabel')}
       </label>
 
       <motion.div
@@ -91,7 +95,7 @@ export default function HeroSearch({ locale }: HeroSearchProps) {
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder={PLACEHOLDER_TEXTS[placeholderIndex]}
+          placeholder={placeholders[placeholderIndex]}
           className="w-full h-full bg-transparent border-none outline-none pl-[52px] pr-[56px] text-[17px] font-normal text-[#0F1724] dark:text-white placeholder:text-[rgba(15,23,36,0.45)] dark:placeholder:text-[rgba(255,255,255,0.40)]"
           autoComplete="off"
           spellCheck={false}
@@ -101,7 +105,7 @@ export default function HeroSearch({ locale }: HeroSearchProps) {
         <button
           type="button"
           onClick={handleSubmit}
-          aria-label="Найти"
+          aria-label={t('searchButtonLabel')}
           className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-[#3B82F6] hover:bg-[#2563EB] text-white transition-colors duration-150"
         >
           <Search size={15} />

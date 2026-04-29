@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
-import { getAllTools, getPostsByTool, getPostsByLocale } from '@/lib/posts';
+import { getAllTools, getPostsByTool } from '@/lib/posts';
 import { TypeBadge, TaskBadge } from '@/components/post/PostBadges';
 import Link from 'next/link';
 import type { Post } from '@/lib/types';
@@ -30,6 +31,21 @@ export async function generateStaticParams() {
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function pluralMaterial(n: number, locale: string, t: Awaited<ReturnType<typeof getTranslations<'tools'>>>): string {
+  if (locale !== 'ru') {
+    return n === 1 ? t('material1') : t('material2');
+  }
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return t('material1');
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return t('material2');
+  return t('material5');
+}
+
+// ---------------------------------------------------------------------------
 // Metadata
 // ---------------------------------------------------------------------------
 
@@ -42,13 +58,14 @@ export async function generateMetadata({
   const posts = getPostsByTool(locale, name);
   if (posts.length === 0) return {};
 
+  const t = await getTranslations({ locale, namespace: 'tools' });
   const displayName = name.charAt(0).toUpperCase() + name.slice(1);
   const count = posts.length;
-  const noun = count === 1 ? 'материал' : count < 5 ? 'материала' : 'материалов';
+  const noun = pluralMaterial(count, locale, t);
 
   return {
     title: `${displayName} — ${count} ${noun} — neversleep`,
-    description: `Гайды и обзоры по инструменту ${displayName} на neversleep.`,
+    description: t('metaDescription', { name: displayName }),
   };
 }
 
@@ -73,9 +90,6 @@ function PostCard({ post, locale }: { post: Post; locale: string }) {
       <p className="line-clamp-2 text-[14px] leading-relaxed text-gray-500">
         {post.description}
       </p>
-      <div className="mt-auto pt-2 text-[12px] text-gray-400">
-        {post.readingTime} мин
-      </div>
     </Link>
   );
 }
@@ -94,9 +108,10 @@ export default async function ToolPage({
 
   if (posts.length === 0) notFound();
 
+  const t = await getTranslations({ locale, namespace: 'tools' });
   const displayName = name.charAt(0).toUpperCase() + name.slice(1);
   const count = posts.length;
-  const noun = count === 1 ? 'материал' : count < 5 ? 'материала' : 'материалов';
+  const noun = pluralMaterial(count, locale, t);
 
   return (
     <main className="min-h-screen bg-white px-4 pb-24 pt-12">

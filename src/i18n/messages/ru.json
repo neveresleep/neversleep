@@ -1,24 +1,73 @@
 {
   "home": {
     "title": "neversleep",
-    "subtitle": "ИИ под твою задачу",
+    "subtitle": "ИИ под твою задачу — гайды, обзоры, кейсы",
     "searchPlaceholder": "Найди гайд под свою задачу...",
+    "heroAriaLabel": "Главный экран",
+    "feedAriaLabel": "Публикации",
+    "placeholder0": "как сделать пост в инстаграм через ИИ...",
+    "placeholder1": "автоматизировать email-рассылку...",
+    "placeholder2": "написать контент-план за 10 минут...",
+    "placeholder3": "обработать фото без Photoshop...",
+    "searchAriaLabel": "Поиск гайдов",
+    "searchLabel": "Поиск гайдов по ИИ",
+    "searchButtonLabel": "Найти",
     "sections": {
       "fresh": "Свежее",
       "byTool": "По инструментам",
       "guides": "Гайды"
-    }
+    },
+    "empty": "Здесь пока пусто. Заходи позже — мы работаем."
   },
   "groups": {
     "text": "Тексты",
     "visual": "Визуал",
     "work": "Работа",
     "automate": "Автоматизации",
-    "nocode": "Без кода"
+    "nocode": "Без кода",
+    "filterAriaLabel": "Фильтр по группам задач"
   },
   "post": {
     "related": "Похожее",
-    "readTime": "мин"
+    "readTime": "мин",
+    "types": {
+      "guide": "Гайд",
+      "review": "Обзор",
+      "case": "Кейс",
+      "list": "Подборка"
+    },
+    "typesLower": {
+      "guide": "гайд",
+      "review": "обзор",
+      "case": "кейс",
+      "list": "подборка"
+    }
+  },
+  "search": {
+    "title": "Поиск",
+    "placeholder": "Введите запрос...",
+    "ariaLabel": "Поиск по сайту",
+    "devBanner": "Поиск в dev режиме — используется текстовый fallback (Pagefind недоступен без билда)",
+    "empty": "Ничего не найдено по запросу",
+    "idle": "Введите запрос, чтобы найти статьи",
+    "found": "Найдено {count} {declension}",
+    "result1": "результат",
+    "result2": "результата",
+    "result5": "результатов"
+  },
+  "tools": {
+    "postsCount": "{count} {declension}",
+    "material1": "материал",
+    "material2": "материала",
+    "material5": "материалов",
+    "metaDescription": "Гайды и обзоры по инструменту {name} на neversleep."
+  },
+  "groupPage": {
+    "material1": "материал",
+    "material2": "материала",
+    "material5": "материалов",
+    "comingSoon": "Скоро появятся материалы по этой теме",
+    "metaDescription": "Гайды и обзоры ИИ-инструментов для задачи «{label}»."
   },
   "nav": {
     "logo": "neversleep",

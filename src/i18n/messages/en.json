@@ -1,24 +1,73 @@
 {
   "home": {
     "title": "neversleep",
-    "subtitle": "AI for your task",
+    "subtitle": "AI for your task — guides, reviews, cases",
     "searchPlaceholder": "Find a guide for your task...",
+    "heroAriaLabel": "Hero section",
+    "feedAriaLabel": "Posts",
+    "placeholder0": "how to create an Instagram post with AI...",
+    "placeholder1": "automate email campaigns...",
+    "placeholder2": "write a content plan in 10 minutes...",
+    "placeholder3": "edit photos without Photoshop...",
+    "searchAriaLabel": "Search guides",
+    "searchLabel": "Search AI guides",
+    "searchButtonLabel": "Search",
     "sections": {
       "fresh": "Fresh",
       "byTool": "By tool",
       "guides": "Guides"
-    }
+    },
+    "empty": "Nothing here yet. Check back soon."
   },
   "groups": {
     "text": "Content",
     "visual": "Visual",
     "work": "Work",
     "automate": "Automate",
-    "nocode": "No-code"
+    "nocode": "No-code",
+    "filterAriaLabel": "Filter by task group"
   },
   "post": {
     "related": "Related",
-    "readTime": "min"
+    "readTime": "min",
+    "types": {
+      "guide": "Guide",
+      "review": "Review",
+      "case": "Case study",
+      "list": "List"
+    },
+    "typesLower": {
+      "guide": "guide",
+      "review": "review",
+      "case": "case study",
+      "list": "list"
+    }
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Enter your query...",
+    "ariaLabel": "Search site",
+    "devBanner": "Dev mode — using text fallback (Pagefind unavailable without build)",
+    "empty": "Nothing found for",
+    "idle": "Enter a query to find articles",
+    "found": "Found {count} {declension}",
+    "result1": "result",
+    "result2": "results",
+    "result5": "results"
+  },
+  "tools": {
+    "postsCount": "{count} {declension}",
+    "material1": "post",
+    "material2": "posts",
+    "material5": "posts",
+    "metaDescription": "Guides and reviews for {name} on neversleep."
+  },
+  "groupPage": {
+    "material1": "post",
+    "material2": "posts",
+    "material5": "posts",
+    "comingSoon": "Content for this topic is coming soon.",
+    "metaDescription": "AI tool guides and reviews for \"{label}\"."
   },
   "nav": {
     "logo": "neversleep",

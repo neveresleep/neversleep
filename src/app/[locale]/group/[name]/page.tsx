@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import { TASK_GROUPS, getGroupTasks } from '@/lib/groups';
 import { getPostsByGroup } from '@/lib/posts';
@@ -27,28 +28,27 @@ export async function generateStaticParams() {
 }
 
 // ---------------------------------------------------------------------------
-// Metadata
+// Helpers
 // ---------------------------------------------------------------------------
 
-const GROUP_LABELS_RU: Record<GroupKey, string> = {
-  text: 'Тексты',
-  visual: 'Визуал',
-  work: 'Работа',
-  automate: 'Автоматизации',
-  nocode: 'Без кода',
-};
-
-const GROUP_LABELS_EN: Record<GroupKey, string> = {
-  text: 'Text',
-  visual: 'Visual',
-  work: 'Work',
-  automate: 'Automation',
-  nocode: 'No-code',
-};
-
-function getGroupLabel(locale: string, key: GroupKey): string {
-  return locale === 'ru' ? GROUP_LABELS_RU[key] : GROUP_LABELS_EN[key];
+function pluralMaterial(
+  n: number,
+  locale: string,
+  t: Awaited<ReturnType<typeof getTranslations<'groupPage'>>>
+): string {
+  if (locale !== 'ru') {
+    return n === 1 ? t('material1') : t('material2');
+  }
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return t('material1');
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return t('material2');
+  return t('material5');
 }
+
+// ---------------------------------------------------------------------------
+// Metadata
+// ---------------------------------------------------------------------------
 
 export async function generateMetadata({
   params,
@@ -59,11 +59,14 @@ export async function generateMetadata({
 
   if (!(name in TASK_GROUPS)) return {};
   const groupKey = name as GroupKey;
-  const label = getGroupLabel(locale, groupKey);
+
+  const tGroups = await getTranslations({ locale, namespace: 'groups' });
+  const tPage = await getTranslations({ locale, namespace: 'groupPage' });
+  const label = tGroups(groupKey);
 
   return {
     title: `${label} — neversleep`,
-    description: `Гайды и обзоры ИИ-инструментов для задачи «${label}».`,
+    description: tPage('metaDescription', { label }),
   };
 }
 
@@ -88,9 +91,6 @@ function PostCard({ post, locale }: { post: Post; locale: string }) {
       <p className="line-clamp-2 text-[14px] leading-relaxed text-gray-500">
         {post.description}
       </p>
-      <div className="mt-auto pt-2 text-[12px] text-gray-400">
-        {post.readingTime} мин
-      </div>
     </Link>
   );
 }
@@ -111,7 +111,10 @@ export default async function GroupPage({
 
   const groupTasks = getGroupTasks(groupKey);
   const posts = getPostsByGroup(locale, groupTasks);
-  const label = getGroupLabel(locale, groupKey);
+
+  const tGroups = await getTranslations({ locale, namespace: 'groups' });
+  const tPage = await getTranslations({ locale, namespace: 'groupPage' });
+  const label = tGroups(groupKey);
 
   return (
     <main className="min-h-screen bg-white px-4 pb-24 pt-12">
@@ -123,10 +126,10 @@ export default async function GroupPage({
           </h1>
           {posts.length > 0 ? (
             <p className="text-[16px] text-gray-500">
-              {posts.length} {posts.length === 1 ? 'материал' : posts.length < 5 ? 'материала' : 'материалов'}
+              {posts.length} {pluralMaterial(posts.length, locale, tPage)}
             </p>
           ) : (
-            <p className="text-[16px] text-gray-400">Скоро появятся материалы по этой теме</p>
+            <p className="text-[16px] text-gray-400">{tPage('comingSoon')}</p>
           )}
         </header>
 

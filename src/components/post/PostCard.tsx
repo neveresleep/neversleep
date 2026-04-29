@@ -2,15 +2,9 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import type { Post, PostType } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
-
-const TYPE_LABELS: Record<PostType, string> = {
-  guide: 'Гайд',
-  review: 'Обзор',
-  case: 'Кейс',
-  list: 'Подборка',
-};
 
 const TYPE_COLORS: Record<
   PostType,
@@ -49,8 +43,9 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, locale, href }: PostCardProps) {
+  const t = useTranslations('post');
   const colors = TYPE_COLORS[post.type];
-  const label = TYPE_LABELS[post.type];
+  const label = t(`types.${post.type}`);
 
   return (
     <motion.div
@@ -139,7 +134,7 @@ export default function PostCard({ post, locale, href }: PostCardProps) {
                 {formatDate(post.date, locale)}
               </time>
               <span className="text-[12px] text-[#0F1724]/50 dark:text-white/40">
-                {post.readingTime} мин
+                {post.readingTime} {t('readTime')}
               </span>
             </div>
           </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 import type { Post } from '@/lib/types';
 import type { GroupKey } from '@/lib/groups';
@@ -49,6 +50,7 @@ interface HomeClientProps {
 export default function HomeClient({ posts, locale }: HomeClientProps) {
   const shouldReduceMotion = useReducedMotion();
   const [selectedGroup, setSelectedGroup] = useState<GroupKey | null>(null);
+  const t = useTranslations('home');
 
   const resolvedHeroContainer = shouldReduceMotion
     ? { hidden: {}, show: {} }
@@ -65,7 +67,7 @@ export default function HomeClient({ posts, locale }: HomeClientProps) {
       <div className="relative min-h-screen flex flex-col">
         {/* Hero */}
         <section
-          aria-label="Главный экран"
+          aria-label={t('heroAriaLabel')}
           className="flex flex-col items-center text-center pt-[15vh] pb-[8vh] px-4 sm:px-6 gap-6"
         >
           <motion.div
@@ -93,7 +95,7 @@ export default function HomeClient({ posts, locale }: HomeClientProps) {
                 letterSpacing: '-0.01em',
               }}
             >
-              ИИ под твою задачу — гайды, обзоры, кейсы
+              {t('subtitle')}
             </motion.p>
 
             {/* Search */}
@@ -113,7 +115,7 @@ export default function HomeClient({ posts, locale }: HomeClientProps) {
 
         {/* Post feed */}
         <section
-          aria-label="Публикации"
+          aria-label={t('feedAriaLabel')}
           className="flex-1 pb-16"
         >
           <PostFeed posts={posts} locale={locale} selectedGroup={selectedGroup} />
