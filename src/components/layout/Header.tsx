@@ -46,6 +46,12 @@ export default function Header() {
               {t('search')}
             </Link>
             <Link
+              href="/tools"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t('tools')}
+            </Link>
+            <Link
               href="/about"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
