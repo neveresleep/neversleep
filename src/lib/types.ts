@@ -31,7 +31,7 @@ export const PostFrontmatterSchema = z.object({
   languages: z.array(z.string()).default(['ru']),
   date: z.coerce.date(),
   source: z.string().url().optional(),
-  cover: z.string().optional(),
+  cover: z.string().url().or(z.string().regex(/^\//)).optional(),
   is_editorial: z.boolean().default(true),
 });
 

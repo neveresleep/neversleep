@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import type { TimeOfDay } from '@/lib/types';
 
@@ -69,7 +69,6 @@ export default function AnimatedBackground({ className }: AnimatedBackgroundProp
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('day');
   const [stars, setStars] = useState<Star[]>([]);
   const [mounted, setMounted] = useState(false);
-  const starsRef = useRef<Star[]>([]);
 
   useEffect(() => {
     const tod = getTimeOfDay(new Date().getHours());
@@ -77,9 +76,7 @@ export default function AnimatedBackground({ className }: AnimatedBackgroundProp
     setMounted(true);
 
     if (tod === 'night') {
-      const generated = generateStars(100);
-      starsRef.current = generated;
-      setStars(generated);
+      setStars(generateStars(100));
     }
   }, []);
 
@@ -91,11 +88,11 @@ export default function AnimatedBackground({ className }: AnimatedBackgroundProp
       <motion.div
         aria-hidden="true"
         className={`fixed inset-0 -z-10 ${className ?? ''}`}
+        // Animate `background` after mount; framer-motion writes inline styles
+        // each frame, so we must not pass `style.background` (it would override).
+        initial={{ background: GRADIENTS.day.gradient }}
         animate={{ background: config.gradient }}
         transition={{ duration: transitionDuration, ease: 'easeInOut' }}
-        style={{
-          background: mounted ? config.gradient : GRADIENTS.day.gradient,
-        }}
       />
 
       <AnimatePresence>

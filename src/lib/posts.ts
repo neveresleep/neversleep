@@ -6,16 +6,24 @@ import { PostFrontmatterSchema, type Post, type PostType, type ToolPage } from '
 const POSTS_DIR = path.join(process.cwd(), 'src/content/posts');
 
 // ---------------------------------------------------------------------------
-// Core loaders
+// Core loaders (memoized per-process — production builds + dev runtime)
 // ---------------------------------------------------------------------------
 
-export function getPostsByLocale(lang: string): Post[] {
-  const dir = path.join(POSTS_DIR, lang);
-  if (!fs.existsSync(dir)) return [];
+const postsCache = new Map<string, Post[]>();
 
-  return fs
+export function getPostsByLocale(lang: string): Post[] {
+  const cached = postsCache.get(lang);
+  if (cached) return cached;
+
+  const dir = path.join(POSTS_DIR, lang);
+  if (!fs.existsSync(dir)) {
+    postsCache.set(lang, []);
+    return [];
+  }
+
+  const posts = fs
     .readdirSync(dir)
-    .filter((f) => f.endsWith('.mdx'))
+    .filter((f) => f.endsWith('.mdx') && !f.startsWith('_') && !f.startsWith('.'))
     .map((filename) => {
       const raw = fs.readFileSync(path.join(dir, filename), 'utf-8');
       const { data, content } = matter(raw);
@@ -29,6 +37,9 @@ export function getPostsByLocale(lang: string): Post[] {
       };
     })
     .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+  postsCache.set(lang, posts);
+  return posts;
 }
 
 export function getPostBySlug(lang: string, slug: string): Post | undefined {

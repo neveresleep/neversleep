@@ -1,4 +1,4 @@
-import { getLatestPosts } from '@/lib/posts';
+import { getPostsByLocale } from '@/lib/posts';
 import HomeClient from '@/components/home/HomeClient';
 
 interface HomePageProps {
@@ -7,7 +7,8 @@ interface HomePageProps {
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
-  const posts = getLatestPosts(locale, 20);
+  // Pass all posts; PostFeed slices the "fresh" tab itself.
+  const posts = getPostsByLocale(locale);
 
   return <HomeClient posts={posts} locale={locale} />;
 }

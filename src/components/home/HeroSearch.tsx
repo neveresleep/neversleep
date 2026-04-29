@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -23,7 +23,6 @@ export default function HeroSearch({ locale }: HeroSearchProps) {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (shouldReduceMotion) return;
@@ -85,7 +84,6 @@ export default function HeroSearch({ locale }: HeroSearchProps) {
         </span>
 
         <input
-          ref={inputRef}
           id="hero-search"
           type="search"
           value={query}

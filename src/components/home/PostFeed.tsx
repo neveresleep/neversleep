@@ -47,10 +47,9 @@ export default function PostFeed({ posts, locale, selectedGroup }: PostFeedProps
     return posts.filter((p) => tasks.includes(p.task));
   }, [posts, selectedGroup]);
 
-  const freshPosts = useMemo(
-    () => [...filteredPosts].sort((a, b) => b.date.getTime() - a.date.getTime()),
-    [filteredPosts]
-  );
+  // `posts` arrive already sorted desc by date from getPostsByLocale().
+  // For the "Свежее" tab we just take the most recent slice.
+  const freshPosts = useMemo(() => filteredPosts.slice(0, 30), [filteredPosts]);
 
   const guidePosts = useMemo(
     () => filteredPosts.filter((p) => p.type === 'guide'),

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { Suspense, useEffect, useRef, useState, useCallback } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
@@ -103,6 +103,14 @@ function PagefindResultCard({ result }: { result: PagefindResult }) {
 // ---------------------------------------------------------------------------
 
 export default function SearchPage() {
+  return (
+    <Suspense fallback={null}>
+      <SearchPageContent />
+    </Suspense>
+  );
+}
+
+function SearchPageContent() {
   const params = useParams();
   const locale = (params?.locale as string) ?? 'ru';
   const searchParams = useSearchParams();
@@ -157,9 +165,9 @@ export default function SearchPage() {
           if (!pagefindRef.current) {
             // Dynamic path prevents TypeScript from resolving the non-existent
             // module (it only exists at runtime after `next build && pagefind`).
-            const pagefindPath = '/pagefind/pagefind.js';
-            // eslint-disable-next-line @typescript-eslint/no-implied-eval
-            pagefindRef.current = await (Function('p', 'return import(p)')(pagefindPath) as Promise<unknown>);
+            // webpackIgnore: runtime-only module, built by `npm run pagefind`
+            // @ts-expect-error — not in node_modules, exists only after build
+            pagefindRef.current = await import(/* webpackIgnore: true */ '/pagefind/pagefind.js');
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             await (pagefindRef.current as any).init();
           }

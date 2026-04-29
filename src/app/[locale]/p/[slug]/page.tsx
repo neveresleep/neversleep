@@ -13,6 +13,8 @@ import { TypeBadge, TaskBadge, ToolBadge, RelatedPosts } from '@/components/post
 // Static params
 // ---------------------------------------------------------------------------
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const locales = ['ru', 'en'];
   const params: { locale: string; slug: string }[] = [];
