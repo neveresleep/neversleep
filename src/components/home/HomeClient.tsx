@@ -3,12 +3,21 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import type { Post } from '@/lib/types';
 import type { GroupKey } from '@/lib/groups';
-import AnimatedBackground from './AnimatedBackground';
 import HeroSearch from './HeroSearch';
 import TaskGroupPills from './TaskGroupPills';
-import PostFeed from './PostFeed';
+
+const AnimatedBackground = dynamic(
+  () => import('@/components/home/AnimatedBackground'),
+  { ssr: false }
+);
+
+const PostFeed = dynamic(
+  () => import('@/components/home/PostFeed'),
+  { loading: () => <div className="animate-pulse h-96 rounded-2xl bg-white/20" /> }
+);
 
 const heroContainer = {
   hidden: {},

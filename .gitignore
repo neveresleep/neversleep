@@ -85,6 +85,9 @@ next-env.d.ts
 .vercel
 .DS_Store
 
+# Pagefind static search index (generated during build)
+public/pagefind/
+
 # Nuxt.js build / generate output
 .nuxt
 dist
