@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 
 import { getPostBySlug, getPostsByLocale, getRelatedPosts } from '@/lib/posts';
+import { generatePageMetadata } from '@/lib/seo';
 import { mdxComponents } from '@/components/post/MDXComponents';
 import { TypeBadge, TaskBadge, ToolBadge, RelatedPosts } from '@/components/post/PostBadges';
 
@@ -42,22 +43,14 @@ export async function generateMetadata({
   const post = getPostBySlug(locale, slug);
   if (!post) return {};
 
-  return {
+  return generatePageMetadata({
     title: `${post.title} — neversleep`,
     description: post.description,
-    openGraph: {
-      title: post.title,
-      description: post.description,
-      type: 'article',
-      publishedTime: post.date.toISOString(),
-      ...(post.cover ? { images: [{ url: post.cover }] } : {}),
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.description,
-    },
-  };
+    lang: locale,
+    canonicalPath: `/p/${post.slug}`,
+    ogImage: post.cover,
+    type: 'article',
+  });
 }
 
 // ---------------------------------------------------------------------------

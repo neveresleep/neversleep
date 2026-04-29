@@ -1,7 +1,4 @@
 import type { Metadata } from 'next';
-import type { Post } from './types';
-import type { GroupKey } from './groups';
-import { TASK_GROUPS } from './groups';
 
 // ---------------------------------------------------------------------------
 // Routing constants
@@ -45,192 +42,83 @@ function buildAlternates(
 }
 
 // ---------------------------------------------------------------------------
-// Post page metadata
+// Universal SEO params interface
 // ---------------------------------------------------------------------------
 
-/**
- * Generates full Next.js `Metadata` for an individual blog post page.
- *
- * @param post     The Post object (already loaded for the target lang).
- * @param lang     Active locale, e.g. "ru" or "en".
- * @param baseUrl  Production origin, e.g. "https://neversleep.ru".
- */
-export function generatePostMetadata(post: Post, lang: string, baseUrl: string): Metadata {
-  const pathname = `/posts/${post.slug}`;
-  const canonical = buildUrl(baseUrl, lang, pathname);
-
-  const ogImage = post.cover
-    ? post.cover.startsWith('http')
-      ? post.cover
-      : buildUrl(baseUrl, lang, post.cover)
-    : `${baseUrl.replace(/\/$/, '')}/og-default.png`;
-
-  return {
-    title: post.title,
-    description: post.description,
-    alternates: {
-      canonical,
-      languages: buildAlternates(baseUrl, pathname),
-    },
-    openGraph: {
-      type: 'article',
-      title: post.title,
-      description: post.description,
-      url: canonical,
-      locale: lang === 'ru' ? 'ru_RU' : 'en_US',
-      publishedTime: post.date.toISOString(),
-      tags: post.tags,
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.description,
-      images: [ogImage],
-    },
-  };
+export interface SeoParams {
+  /** Page title (already localised by the caller). */
+  title: string;
+  /** Page description (already localised by the caller). */
+  description: string;
+  /** Active locale, e.g. "ru" or "en". */
+  lang: string;
+  /**
+   * Path component of the canonical URL, shared across locales.
+   * Example: `/p/chatgpt-post`, `/tools/chatgpt`, `/group/text`, `/`.
+   * Must start with `/`.
+   */
+  canonicalPath: string;
+  /**
+   * Absolute URL or root-relative path of the Open Graph image.
+   * When omitted no image meta is emitted (avoids referencing non-existent
+   * files).
+   */
+  ogImage?: string;
+  /** Open Graph page type. Defaults to `'website'`. */
+  type?: 'website' | 'article';
 }
 
 // ---------------------------------------------------------------------------
-// Tool page metadata
+// Universal metadata generator
 // ---------------------------------------------------------------------------
 
-const TOOL_PAGE_LABELS: Record<string, { ru: string; en: string }> = {
-  default: {
-    ru: 'Руководства и обзоры',
-    en: 'Guides & reviews',
-  },
-};
-
 /**
- * Generates `Metadata` for a tool landing page (`/tools/[slug]`).
+ * Generates a complete Next.js `Metadata` object including:
+ * - `title` / `description`
+ * - `alternates.canonical` + `alternates.languages` (hreflang for ru / en)
+ * - Full `openGraph` block
+ * - Full `twitter` block
  *
- * @param toolSlug  URL-safe tool identifier, e.g. "chatgpt".
- * @param postCount Number of posts associated with this tool.
- * @param lang      Active locale.
- * @param baseUrl   Production origin.
+ * The base URL is resolved from `NEXT_PUBLIC_SITE_URL` so staging / production
+ * environments never need code changes.
  */
-export function generateToolPageMetadata(
-  toolSlug: string,
-  postCount: number,
-  lang: string,
-  baseUrl = ''
-): Metadata {
-  const label = TOOL_PAGE_LABELS['default']?.[lang as 'ru' | 'en'] ?? TOOL_PAGE_LABELS['default']!.en;
-  const pathname = `/tools/${toolSlug}`;
-  const canonical = buildUrl(baseUrl, lang, pathname);
-  const ogImage = `${baseUrl.replace(/\/$/, '')}/og-default.png`;
+export function generatePageMetadata(params: SeoParams): Metadata {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://neversleep.chat';
+  const { title, description, lang, canonicalPath, ogImage, type = 'website' } = params;
 
-  const title =
-    lang === 'ru'
-      ? `${toolSlug} — ${label} (${postCount})`
-      : `${toolSlug} — ${label} (${postCount})`;
+  const canonical = buildUrl(baseUrl, lang, canonicalPath);
 
-  const description =
-    lang === 'ru'
-      ? `Все материалы про ${toolSlug}: инструкции, кейсы и обзоры. ${postCount} публикаций.`
-      : `All content about ${toolSlug}: guides, cases and reviews. ${postCount} posts.`;
+  // Resolve ogImage to an absolute URL when it is root-relative.
+  const ogImageAbsolute = ogImage
+    ? ogImage.startsWith('http')
+      ? ogImage
+      : `${baseUrl.replace(/\/$/, '')}${ogImage}`
+    : undefined;
+
+  const images = ogImageAbsolute
+    ? [{ url: ogImageAbsolute, width: 1200, height: 630, alt: title }]
+    : undefined;
 
   return {
     title,
     description,
     alternates: {
       canonical,
-      languages: buildAlternates(baseUrl, pathname),
+      languages: buildAlternates(baseUrl, canonicalPath),
     },
     openGraph: {
-      type: 'website',
+      type,
       title,
       description,
       url: canonical,
       locale: lang === 'ru' ? 'ru_RU' : 'en_US',
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
+      ...(images ? { images } : {}),
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImage],
-    },
-  };
-}
-
-// ---------------------------------------------------------------------------
-// Group page metadata
-// ---------------------------------------------------------------------------
-
-/**
- * Generates `Metadata` for a task-group page (`/groups/[key]`).
- *
- * @param groupKey  One of the keys from TASK_GROUPS, e.g. "text".
- * @param lang      Active locale.
- * @param baseUrl   Production origin.
- */
-export function generateGroupPageMetadata(
-  groupKey: GroupKey,
-  lang: string,
-  baseUrl = ''
-): Metadata {
-  const group = TASK_GROUPS[groupKey];
-  const pathname = `/groups/${groupKey}`;
-  const canonical = buildUrl(baseUrl, lang, pathname);
-  const ogImage = `${baseUrl.replace(/\/$/, '')}/og-default.png`;
-
-  // Derive human-readable labels from the i18n key stored in group.labelKey
-  // ("groups.text" → "text") while keeping it generic enough to handle
-  // future keys. Full translations live in the i18n JSON files; here we
-  // provide a safe fallback.
-  const rawLabel = group.labelKey.split('.').pop() ?? groupKey;
-  const title =
-    lang === 'ru'
-      ? `Группа задач: ${rawLabel}`
-      : `Task group: ${rawLabel}`;
-  const description =
-    lang === 'ru'
-      ? `Материалы блога по задачам группы «${rawLabel}»: ${group.tasks.join(', ')}.`
-      : `Blog posts for task group "${rawLabel}": ${group.tasks.join(', ')}.`;
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical,
-      languages: buildAlternates(baseUrl, pathname),
-    },
-    openGraph: {
-      type: 'website',
-      title,
-      description,
-      url: canonical,
-      locale: lang === 'ru' ? 'ru_RU' : 'en_US',
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [ogImage],
+      ...(ogImageAbsolute ? { images: [ogImageAbsolute] } : {}),
     },
   };
 }

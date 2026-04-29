@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { getAllTools, getPostsByTool } from '@/lib/posts';
+import { generatePageMetadata } from '@/lib/seo';
 import { TypeBadge, TaskBadge } from '@/components/post/PostBadges';
 import Link from 'next/link';
 import type { Post } from '@/lib/types';
@@ -63,10 +64,12 @@ export async function generateMetadata({
   const count = posts.length;
   const noun = pluralMaterial(count, locale, t);
 
-  return {
+  return generatePageMetadata({
     title: `${displayName} — ${count} ${noun} — neversleep`,
     description: t('metaDescription', { name: displayName }),
-  };
+    lang: locale,
+    canonicalPath: `/tools/${name}`,
+  });
 }
 
 // ---------------------------------------------------------------------------

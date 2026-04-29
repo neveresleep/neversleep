@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { TASK_GROUPS, getGroupTasks } from '@/lib/groups';
 import { getPostsByGroup } from '@/lib/posts';
+import { generatePageMetadata } from '@/lib/seo';
 import { TypeBadge, TaskBadge } from '@/components/post/PostBadges';
 import type { GroupKey } from '@/lib/types';
 import type { Post } from '@/lib/types';
@@ -64,10 +65,12 @@ export async function generateMetadata({
   const tPage = await getTranslations({ locale, namespace: 'groupPage' });
   const label = tGroups(groupKey);
 
-  return {
+  return generatePageMetadata({
     title: `${label} — neversleep`,
     description: tPage('metaDescription', { label }),
-  };
+    lang: locale,
+    canonicalPath: `/group/${name}`,
+  });
 }
 
 // ---------------------------------------------------------------------------
