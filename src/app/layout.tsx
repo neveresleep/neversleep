@@ -1,13 +1,5 @@
 import type { Metadata } from 'next';
-import { Manrope } from 'next/font/google';
 import './globals.css';
-
-const manrope = Manrope({
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-manrope',
-  display: 'swap',
-  preload: true,
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://neversleep.chat'),
@@ -33,11 +25,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="ru" suppressHydrationWarning>
-      <body className={`${manrope.variable} font-sans antialiased`}>
-        {children}
-      </body>
-    </html>
-  );
+  return children;
 }

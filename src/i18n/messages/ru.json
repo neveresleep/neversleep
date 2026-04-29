@@ -21,6 +21,12 @@
     "readTime": "мин"
   },
   "nav": {
+    "logo": "neversleep",
+    "search": "Поиск",
     "about": "О проекте"
+  },
+  "theme": {
+    "light": "Светлая",
+    "dark": "Тёмная"
   }
 }

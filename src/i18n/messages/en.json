@@ -21,6 +21,12 @@
     "readTime": "min"
   },
   "nav": {
+    "logo": "neversleep",
+    "search": "Search",
     "about": "About"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
   }
 }
