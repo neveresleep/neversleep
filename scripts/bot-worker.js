@@ -58,6 +58,7 @@ export default {
           headers: {
             Authorization: `Bearer ${GH_TOKEN}`,
             Accept: 'application/vnd.github+json',
+            'User-Agent': 'neversleep-bot/1.0',
           },
           body: JSON.stringify({ ref: 'main', inputs: { source_url: payload, lang: 'ru' } }),
         }
