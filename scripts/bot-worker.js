@@ -4,7 +4,6 @@ export default {
     const TG_TOKEN = env.TELEGRAM_BOT_TOKEN;
     const GH_TOKEN = env.GITHUB_PAT;
     const GH_REPO  = env.GH_REPO || 'neveresleep/neversleep';
-    const GH_OWNER = env.GH_OWNER || 'neveresleep';
     const ALLOWED  = env.ALLOWED_USER_ID;
 
     const url = new URL(request.url);
@@ -51,7 +50,7 @@ export default {
       if (!payload) return new Response('ok', { status: 200 });
 
       // Call GitHub API — one single operation
-      const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/274114119/dispatches`;
+      const apiUrl = `https://api.github.com/repos/${GH_REPO}/actions/workflows/274114119/dispatches`;
       const res = await fetch(
         apiUrl,
         {
@@ -68,7 +67,7 @@ export default {
       let status = '✅';
       if (!res.ok) {
         const body = await res.text().catch(() => '');
-        status = `❌ ${res.status}\nGH_OWNER: ${GH_OWNER}\nGH_REPO: ${GH_REPO}\n${body.slice(0, 300)}`;
+        status = `❌ ${res.status}\nGH_REPO: ${GH_REPO}\n${body.slice(0, 300)}`;
       }
 
       await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
