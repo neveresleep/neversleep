@@ -1,0 +1,7 @@
+name = "neversleep-bot"
+main = "scripts/bot-worker.js"
+compatibility_date = "2025-04-01"
+
+[vars]
+GH_REPO = "neveresleep/neversleep"
+GH_OWNER = "neveresleep"

@@ -1,0 +1,49 @@
+name: Generate Post
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_url:
+        description: 'Source URL or text'
+        required: true
+        type: string
+      lang:
+        description: 'Language (ru / en / both)'
+        required: true
+        default: 'ru'
+        type: choice
+        options:
+          - ru
+          - en
+          - both
+      user_note:
+        description: 'Optional user note / context'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate post
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          SOURCE_URL: ${{ github.event.inputs.source_url }}
+          LANG: ${{ github.event.inputs.lang }}
+          USER_NOTE: ${{ github.event.inputs.user_note }}
+        run: node scripts/generate-post.mjs
+
+      - name: Commit & push
+        run: |
+          git config user.name "neversleep-bot"
+          git config user.email "bot@neversleep.chat"
+          git add -A
+          git diff --staged --quiet || git commit -m "new post [skip vercel]"
+          git push
