@@ -13,9 +13,7 @@
     "searchLabel": "Поиск гайдов по ИИ",
     "searchButtonLabel": "Найти",
     "sections": {
-      "fresh": "Свежее",
-      "byTool": "По инструментам",
-      "guides": "Гайды"
+      "fresh": "Свежее"
     },
     "empty": "Здесь пока пусто. Заходи позже — мы работаем."
   },
@@ -55,13 +53,6 @@
     "result2": "результата",
     "result5": "результатов"
   },
-  "tools": {
-    "postsCount": "{count} {declension}",
-    "material1": "материал",
-    "material2": "материала",
-    "material5": "материалов",
-    "metaDescription": "Гайды и обзоры по инструменту {name} на neversleep."
-  },
   "groupPage": {
     "material1": "материал",
     "material2": "материала",
@@ -71,9 +62,41 @@
   },
   "nav": {
     "logo": "neversleep",
+    "home": "Главная",
+    "discover": "Discover",
     "search": "Поиск",
-    "tools": "Тулс",
+    "socAi": "soc-ai",
+    "soon": "скоро",
+    "settings": "Настройки",
     "about": "О проекте"
+  },
+  "discoverPage": {
+    "title": "Discover",
+    "subtitle": "Лента ИИ-гайдов и проектов: фильтруй по профессии и инструменту, чтобы найти своё.",
+    "metaDescription": "Лента гайдов и проектов на neversleep — найди ИИ-сценарий под свою профессию и инструмент.",
+    "filterButton": "Фильтр",
+    "searchPlaceholder": "Поиск по гайдам и проектам",
+    "drawerTitle": "Фильтры",
+    "drawerClose": "Закрыть фильтры",
+    "professionsLabel": "Профессии",
+    "toolsLabel": "Инструменты",
+    "reset": "Сбросить",
+    "emptyTitle": "Скоро здесь появятся гайды и проекты",
+    "emptyHint": "Готовим первую партию материалов — загляни через несколько дней.",
+    "emptyFilteredTitle": "Под такие фильтры ничего не нашли",
+    "emptyFilteredHint": "Попробуй убрать что-то из выбора или сбросить фильтры."
+  },
+  "socAi": {
+    "ariaLabel": "Анонс soc-ai",
+    "soon": "скоро",
+    "close": "Закрыть",
+    "hook": "Покажи миру, что ты сделал с ИИ",
+    "bait": "Ранний доступ к портфолио, где тебя заметят правильные люди.",
+    "emailLabel": "Email для раннего доступа",
+    "emailPlaceholder": "Твой email для доступа",
+    "cta": "Забронировать место",
+    "socialProof": "Первые в списке. Эксклюзивный доступ.",
+    "thanks": "Ты в списке. Скоро там будет место только для твоих проектов."
   },
   "theme": {
     "light": "Светлая",

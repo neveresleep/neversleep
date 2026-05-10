@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getAllPostsAllLocales, getToolsWithPosts } from '@/lib/posts';
+import { getAllPostsAllLocales } from '@/lib/posts';
 import { TASK_GROUPS } from '@/lib/groups';
 
 const BASE_URL = 'https://neversleep.chat';
@@ -21,7 +21,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: page === '' ? 1.0 : 0.7,
     });
-    // English variants
     entries.push({
       url: `${BASE_URL}/en${page}`,
       lastModified: new Date(),
@@ -41,23 +40,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.8,
       });
     }
-  }
-
-  // Tool pages — based on ru locale tools
-  const ruTools = getToolsWithPosts('ru');
-  for (const toolPage of ruTools) {
-    entries.push({
-      url: `${BASE_URL}/tools/${toolPage.slug}`,
-      lastModified: toolPage.firstSeen,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    });
-    entries.push({
-      url: `${BASE_URL}/en/tools/${toolPage.slug}`,
-      lastModified: toolPage.firstSeen,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    });
   }
 
   // Group pages

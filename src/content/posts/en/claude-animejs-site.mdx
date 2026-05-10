@@ -1,0 +1,143 @@
+---
+title: "Build an Anime.js-style site with Claude in an afternoon"
+slug: "claude-animejs-site"
+description: "Step-by-step recipe: build a minimalist Anime.js-style site with Claude — timelines, hover effects, custom cursor and scroll animations."
+task: "landing"
+type: "guide"
+tags: ["animations", "anime.js", "landing", "vibe-coding"]
+professions: ["designer", "nocode", "freelancer"]
+tools: ["claude"]
+media: "video"
+languages: ["ru", "en"]
+date: 2026-05-10
+source: "https://x.com/i/status/2052980072550727932"
+cover: "/images/claude-animejs-site-cover.jpg"
+is_editorial: true
+---
+
+<video
+  src="/videos/claude-animejs-site.mp4"
+  poster="/images/claude-animejs-site-cover.jpg"
+  controls
+  playsInline
+  preload="metadata"
+  className="my-6 w-full rounded-2xl"
+/>
+
+A minimal site with smooth motion looks more expensive than it is. Text spells in letter by letter, shapes glide on a timeline, the cursor feels alive. Used to be you needed GSAP and a lot of hand-tuning. Now you write a Claude prompt that targets [Anime.js](https://animejs.com/), copy the code, and ship.
+
+This isn't vibe-coding for its own sake. The mechanics are short, declarative Anime.js calls. Claude writes them well because the syntax is stable and the docs are clean.
+
+## What you need
+
+- Claude (claude.ai or Claude Code in the terminal)
+- Node.js installed ([nodejs.org](https://nodejs.org/), any LTS)
+- A code editor (VS Code, Cursor, Zed)
+- 30–60 minutes
+
+## Step 1. Ask Claude for a plan
+
+Don't say "build me an animated site" — you'll get a template. Describe the vibe. Prompt:
+
+```
+Plan a minimal one-page site with smooth animations in the
+style of the Anime.js website. Stack: HTML + CSS + Anime.js
+(no React, no bundler). The page should have:
+— a hero headline that animates in letter by letter
+— a 'features' section with 3 cards, fades in on scroll with
+  stagger
+— hover effect on the cards (subtle tilt + color shift)
+— a custom cursor that magnetizes toward clickable elements
+— a minimal footer
+
+Describe the file structure and the build order, no code yet.
+I'll say "code it" when I'm ready.
+```
+
+Claude returns a plan: `index.html`, `styles.css`, `main.js`, the order of animations. Trim anything you don't need: "drop features, keep hero and cursor."
+
+## Step 2. Create a folder and install Anime.js
+
+Open the terminal, create a project folder, install the lib:
+
+```bash
+mkdir my-anime-site && cd my-anime-site
+npm init -y
+npm i animejs
+```
+
+`npm init -y` creates `package.json` with defaults. `npm i animejs` pulls the latest Anime.js into `node_modules`.
+
+If the terminal says `command not found: npm`, Node.js isn't installed. Grab it from [nodejs.org](https://nodejs.org/), restart your terminal.
+
+## Step 3. Generate the base HTML and CSS
+
+Claude prompt:
+
+```
+Create index.html and styles.css per the plan above. Font:
+Inter from Google Fonts. Colors: background #0F0F12, text
+#F4F4F5, accent #3DD68C. Hero is full-viewport, headline 96px
+on desktop, 48px on mobile. No borders, no shadows — only
+typography and whitespace.
+```
+
+Drop both files in the project folder. Double-click `index.html` and you'll see the static layout, no motion yet.
+
+## Step 4. Ask Claude for timelines and stagger
+
+This is the core of Anime.js. A timeline is a sequence of animations; stagger delays elements inside a group. Prompt:
+
+```
+Generate main.js. Import anime from 'animejs/lib/anime.es.js'.
+Build:
+1) Hero headline: split into per-letter spans, animate
+   translateY(40px → 0) and opacity (0 → 1), stagger 30ms,
+   easing 'easeOutExpo', duration 800ms.
+2) Feature cards: animate in on scroll via IntersectionObserver,
+   stagger 120ms, scale (0.95 → 1) + opacity, easing
+   'easeOutCubic'.
+3) Run hero on page load.
+
+Use ES modules (type="module" in HTML). Show changes to
+index.html if needed.
+```
+
+Claude returns the code. Wire `main.js` via `<script type="module" src="main.js"></script>`. Reload `index.html` — the headline spells in, the cards rise on scroll.
+
+## Step 5. Hover, cursor, scroll
+
+Layer interaction in one prompt:
+
+```
+In the same main.js add:
+1) Hover on each feature card: tilt on mousemove (rotateX and
+   rotateY based on cursor position, max 8deg), smooth reset on
+   mouseleave (300ms easeOutQuad).
+2) Custom cursor: 12px circle, follows the mouse with lerp
+   (smoothing 0.15). On hover over a link or button — grows to
+   32px and switches to the accent color.
+3) Hide the native cursor (cursor: none on body).
+
+Don't break the animations from Step 4.
+```
+
+Now the site feels alive: cards tilt under the pointer, the cursor magnetizes onto buttons.
+
+## Step 6. Strip the UI to nothing
+
+The urge to add gradients, emoji, icons is real. Fight it. Rule: **motion only works when the room is silent around it**. Kill borders, shadows, accents beyond one. Keep typography, whitespace, and animation.
+
+## What can go wrong
+
+- **Animation jitters on mobile.** Anime.js cheaply animates `transform` and `opacity`; expensive ones are `width`, `height`, `top`, `left`. If Claude generated the latter — ask for transforms.
+- **Cursor lags behind.** Lower the lerp factor (0.2 → 0.3) or use `requestAnimationFrame` directly instead of `setInterval`.
+- **Stagger breaks on long text.** If you have 80+ letters, increase the per-letter delay or split by words.
+- **Site won't open from a double-click.** Browsers block ES modules over `file://`. Run a local server: `npx serve` from the project folder.
+
+## What to try next
+
+- Animate SVG illustrations with Anime.js (`stroke-dashoffset` for self-drawing lines)
+- Add [Lenis](https://github.com/darkroomengineering/lenis) for smooth scrolling
+- Port to Astro or Next.js if you need real routes
+- Deploy to Vercel: `vercel` from the terminal, public URL in 30 seconds

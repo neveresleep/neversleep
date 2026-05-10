@@ -5,18 +5,6 @@ import type { GroupKey } from './groups';
 export type { GroupKey };
 
 // ---------------------------------------------------------------------------
-// Branded types
-// ---------------------------------------------------------------------------
-
-/** Branded string for tool slugs — prevents mixing raw strings with slug values */
-export type ToolSlug = string & { readonly brand: unique symbol };
-
-/** Helper to cast a raw string to a ToolSlug without a runtime cost */
-export function toToolSlug(raw: string): ToolSlug {
-  return raw as ToolSlug;
-}
-
-// ---------------------------------------------------------------------------
 // Zod schema & inferred types
 // ---------------------------------------------------------------------------
 
@@ -25,9 +13,11 @@ export const PostFrontmatterSchema = z.object({
   slug: z.string(),
   description: z.string(),
   task: z.string(),
-  tools: z.array(z.string()),
   type: z.enum(['guide', 'review', 'case', 'list']),
   tags: z.array(z.string()).default([]),
+  professions: z.array(z.string()).default([]),
+  tools: z.array(z.string()).default([]),
+  media: z.enum(['text', 'image', 'video', '3d']).default('text'),
   languages: z.array(z.string()).default(['ru']),
   date: z.coerce.date(),
   source: z.string().url().optional(),
@@ -57,16 +47,3 @@ export interface Post extends PostFrontmatter {
 export type Locale = 'ru' | 'en';
 export type PostType = 'guide' | 'review' | 'case' | 'list';
 export type TimeOfDay = 'morning' | 'day' | 'evening' | 'night';
-
-// ---------------------------------------------------------------------------
-// ToolPage — aggregate type for /tools/[slug] pages
-// ---------------------------------------------------------------------------
-
-export interface ToolPage {
-  /** Tool slug (URL-safe identifier, e.g. "chatgpt") */
-  slug: string;
-  /** All posts mentioning this tool, sorted by date desc */
-  posts: Post[];
-  /** Date of the earliest post that first referenced this tool */
-  firstSeen: Date;
-}

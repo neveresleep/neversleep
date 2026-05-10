@@ -1,6 +1,7 @@
 import type { MDXComponents } from 'mdx/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import CodeBlock from './CodeBlock';
 
 export const mdxComponents: MDXComponents = {
   h1: ({ children }) => (
@@ -27,17 +28,18 @@ export const mdxComponents: MDXComponents = {
     </p>
   ),
 
-  pre: ({ children }) => (
-    <pre className="my-6 overflow-x-auto rounded-xl bg-gray-900 px-5 py-4 text-sm leading-relaxed text-gray-100 shadow-md">
-      {children}
-    </pre>
-  ),
+  pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
 
   code: ({ children, className }) => {
-    // Block code rendered inside <pre> — don't double-style
+    // Highlighted block (rehype-highlight added a language-* class)
     if (className) {
       return <code className={className}>{children}</code>;
     }
+    // Plain block code (```without-language```) — multiline string. Inherit color from <pre>.
+    if (typeof children === 'string' && children.includes('\n')) {
+      return <code className="font-mono">{children}</code>;
+    }
+    // True inline code (single backticks)
     return (
       <code className="rounded-md bg-gray-100 px-1.5 py-0.5 text-[15px] font-mono text-rose-600">
         {children}

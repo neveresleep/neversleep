@@ -54,7 +54,7 @@ export interface SeoParams {
   lang: string;
   /**
    * Path component of the canonical URL, shared across locales.
-   * Example: `/p/chatgpt-post`, `/tools/chatgpt`, `/group/text`, `/`.
+   * Example: `/p/chatgpt-post`, `/group/text`, `/`.
    * Must start with `/`.
    */
   canonicalPath: string;

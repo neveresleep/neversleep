@@ -15,9 +15,11 @@ const manrope = Manrope({
 
 export default async function LocaleLayout({
   children,
+  modal,
   params,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
@@ -31,6 +33,7 @@ export default async function LocaleLayout({
           <NextIntlClientProvider messages={messages}>
             <Header />
             {children}
+            {modal}
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

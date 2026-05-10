@@ -9,6 +9,7 @@ import type { Post } from '@/lib/types';
 import type { GroupKey } from '@/lib/groups';
 import HeroSearch from './HeroSearch';
 import TaskGroupPills from './TaskGroupPills';
+import SocAiPopup from './SocAiPopup';
 
 const AnimatedBackground = dynamic(
   () => import('@/components/home/AnimatedBackground'),
@@ -121,6 +122,9 @@ export default function HomeClient({ posts, locale }: HomeClientProps) {
           <PostFeed posts={posts} locale={locale} selectedGroup={selectedGroup} />
         </section>
       </div>
+
+      {/* soc-ai slide-in teaser */}
+      <SocAiPopup />
     </>
   );
 }

@@ -48,27 +48,6 @@ export function TaskBadge({ task }: TaskBadgeProps) {
 }
 
 // ---------------------------------------------------------------------------
-// ToolBadge
-// ---------------------------------------------------------------------------
-
-interface ToolBadgeProps {
-  tool: string;
-  locale: string;
-}
-
-export function ToolBadge({ tool, locale }: ToolBadgeProps) {
-  const href = locale === 'ru' ? `/tools/${tool}` : `/${locale}/tools/${tool}`;
-  return (
-    <Link
-      href={href}
-      className="inline-flex items-center rounded-full border border-gray-200 bg-white px-3 py-1 text-[12px] font-semibold uppercase tracking-widest text-gray-500 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
-    >
-      {tool}
-    </Link>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // PostCard (used in RelatedPosts)
 // ---------------------------------------------------------------------------
 

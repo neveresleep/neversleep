@@ -40,17 +40,23 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <nav className="flex items-center gap-4">
             <Link
+              href="/discover"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t('discover')}
+            </Link>
+            <Link
               href="/search"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {t('search')}
             </Link>
-            <Link
-              href="/tools"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {t('tools')}
-            </Link>
+            <span className="text-sm text-muted-foreground/60 flex items-center gap-1.5 cursor-default select-none">
+              soc-ai
+              <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#3B82F6]/15 text-[#3B82F6]">
+                {t('soon')}
+              </span>
+            </span>
             <Link
               href="/about"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"

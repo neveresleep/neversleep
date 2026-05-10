@@ -107,24 +107,6 @@ export default function PostCard({ post, locale, href }: PostCardProps) {
               {post.description}
             </p>
 
-            {/* Tools */}
-            {post.tools.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
-                {post.tools.slice(0, 4).map((tool) => (
-                  <span
-                    key={tool}
-                    className="text-[12px] font-semibold tracking-[0.04em] px-2 py-0.5 rounded-full border"
-                    style={{
-                      background: 'rgba(255,255,255,0.20)',
-                      borderColor: 'rgba(255,255,255,0.30)',
-                    }}
-                  >
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            )}
-
             {/* Footer: date + reading time */}
             <div className="flex items-center justify-between pt-2 border-t border-white/30 dark:border-white/10">
               <time

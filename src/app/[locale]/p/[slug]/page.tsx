@@ -1,14 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
 
-import { getPostBySlug, getPostsByLocale, getRelatedPosts } from '@/lib/posts';
+import { getPostBySlug, getPostsByLocale } from '@/lib/posts';
 import { generatePageMetadata } from '@/lib/seo';
-import { mdxComponents } from '@/components/post/MDXComponents';
-import { TypeBadge, TaskBadge, ToolBadge, RelatedPosts } from '@/components/post/PostBadges';
+import PostView from '@/components/post/PostView';
 
 // ---------------------------------------------------------------------------
 // Static params
@@ -66,71 +61,9 @@ export default async function PostPage({
   const post = getPostBySlug(locale, slug);
   if (!post) notFound();
 
-  const related = getRelatedPosts(post, locale, 3);
-
-  const formattedDate = post.date.toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-
   return (
     <main className="min-h-screen bg-white px-4 pb-24 pt-12">
-      <article className="max-w-2xl mx-auto">
-        {/* Badges row */}
-        <div className="mb-5 flex flex-wrap gap-2">
-          <TypeBadge type={post.type} />
-          <TaskBadge task={post.task} />
-          {post.tools.map((tool) => (
-            <ToolBadge key={tool} tool={tool} locale={locale} />
-          ))}
-        </div>
-
-        {/* Title */}
-        <h1 className="mb-4 text-[clamp(28px,5vw,40px)] font-extrabold leading-tight tracking-tight text-gray-900">
-          {post.title}
-        </h1>
-
-        {/* Meta: date + reading time */}
-        <div className="mb-8 flex items-center gap-3 text-[14px] text-gray-400">
-          <time dateTime={post.date.toISOString()}>{formattedDate}</time>
-          <span aria-hidden="true">·</span>
-          <span>{post.readingTime} мин</span>
-        </div>
-
-        {/* Cover image */}
-        {post.cover && (
-          <div className="mb-10 overflow-hidden rounded-2xl">
-            <Image
-              src={post.cover}
-              alt={post.title}
-              width={800}
-              height={450}
-              className="w-full object-cover"
-              priority
-            />
-          </div>
-        )}
-
-        {/* MDX content */}
-        <div className="prose-reset">
-          <MDXRemote
-            source={post.content}
-            components={mdxComponents}
-            options={{
-              mdxOptions: {
-                remarkPlugins: [remarkGfm],
-                rehypePlugins: [rehypeHighlight],
-              },
-            }}
-          />
-        </div>
-      </article>
-
-      {/* Related posts */}
-      <div className="max-w-2xl mx-auto">
-        <RelatedPosts posts={related} locale={locale} />
-      </div>
+      <PostView post={post} locale={locale} />
     </main>
   );
 }

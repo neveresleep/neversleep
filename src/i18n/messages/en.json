@@ -13,9 +13,7 @@
     "searchLabel": "Search AI guides",
     "searchButtonLabel": "Search",
     "sections": {
-      "fresh": "Fresh",
-      "byTool": "By tool",
-      "guides": "Guides"
+      "fresh": "Fresh"
     },
     "empty": "Nothing here yet. Check back soon."
   },
@@ -55,13 +53,6 @@
     "result2": "results",
     "result5": "results"
   },
-  "tools": {
-    "postsCount": "{count} {declension}",
-    "material1": "post",
-    "material2": "posts",
-    "material5": "posts",
-    "metaDescription": "Guides and reviews for {name} on neversleep."
-  },
   "groupPage": {
     "material1": "post",
     "material2": "posts",
@@ -71,9 +62,41 @@
   },
   "nav": {
     "logo": "neversleep",
+    "home": "Home",
+    "discover": "Discover",
     "search": "Search",
-    "tools": "Tools",
+    "socAi": "soc-ai",
+    "soon": "soon",
+    "settings": "Settings",
     "about": "About"
+  },
+  "discoverPage": {
+    "title": "Discover",
+    "subtitle": "A feed of AI guides and projects — filter by profession and tool to find what fits you.",
+    "metaDescription": "A feed of guides and projects on neversleep — find AI workflows for your profession and tool of choice.",
+    "filterButton": "Filters",
+    "searchPlaceholder": "Search guides and projects",
+    "drawerTitle": "Filters",
+    "drawerClose": "Close filters",
+    "professionsLabel": "Professions",
+    "toolsLabel": "Tools",
+    "reset": "Reset",
+    "emptyTitle": "Guides and projects are landing here soon",
+    "emptyHint": "First batch is in the works — come back in a few days.",
+    "emptyFilteredTitle": "Nothing matches these filters",
+    "emptyFilteredHint": "Try removing something or reset the filters."
+  },
+  "socAi": {
+    "ariaLabel": "soc-ai announcement",
+    "soon": "soon",
+    "close": "Close",
+    "hook": "Build your AI creator portfolio",
+    "bait": "Early access to a portfolio where AI creators connect and collaborate.",
+    "emailLabel": "Email for early access",
+    "emailPlaceholder": "Your email for early access",
+    "cta": "Claim early access",
+    "socialProof": "First 50. Founding members.",
+    "thanks": "You're in. We'll notify you when your portfolio is ready."
   },
   "theme": {
     "light": "Light",
