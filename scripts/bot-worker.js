@@ -51,8 +51,9 @@ export default {
       if (!payload) return new Response('ok', { status: 200 });
 
       // Call GitHub API — one single operation
+      const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/generate-post.yml/dispatches`;
       const res = await fetch(
-        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/generate-post.yml/dispatches`,
+        apiUrl,
         {
           method: 'POST',
           headers: {
@@ -67,7 +68,7 @@ export default {
       let status = '✅';
       if (!res.ok) {
         const body = await res.text().catch(() => '');
-        status = `❌ ${res.status}: ${body.slice(0, 200)}`;
+        status = `❌ ${res.status}\nGH_OWNER: ${GH_OWNER}\nGH_REPO: ${GH_REPO}\n${body.slice(0, 300)}`;
       }
 
       await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
