@@ -51,13 +51,13 @@ export default {
       if (!payload) return new Response('ok', { status: 200 });
 
       // Call GitHub API — one single operation
-      const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/generate-post.yml/dispatches`;
+      const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/274114119/dispatches`;
       const res = await fetch(
         apiUrl,
         {
           method: 'POST',
           headers: {
-            'Authorization': `token ${GH_TOKEN}`,
+            'Authorization': `Bearer ${GH_TOKEN}`,
             'User-Agent': 'neversleep-bot',
             'Accept': 'application/vnd.github+json',
           },
