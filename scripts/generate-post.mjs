@@ -54,14 +54,14 @@ async function fetchSource(raw) {
 // ---------------------------------------------------------------------------
 
 async function callLLM(prompt, system) {
-  const res = await fetch('https://api.deepseek.com/chat/completions', {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'deepseek-chat',
+      model: 'deepseek/deepseek-v4-flash',
       messages: [
         { role: 'system', content: system },
         { role: 'user', content: prompt },
@@ -72,7 +72,7 @@ async function callLLM(prompt, system) {
   });
   const data = await res.json();
   if (!data.choices || !data.choices[0]) {
-    throw new Error(`DeepSeek error: ${JSON.stringify(data)}`);
+    throw new Error(`LLM API error: ${JSON.stringify(data)}`);
   }
   return data.choices[0].message.content;
 }
