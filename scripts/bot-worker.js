@@ -1,4 +1,4 @@
-// neversleep.bot — Cloudflare Worker (minimal)
+// neversleep.bot — Cloudflare Worker
 export default {
   async fetch(request, env) {
     const TG_TOKEN = env.TELEGRAM_BOT_TOKEN;
@@ -8,7 +8,13 @@ export default {
 
     const url = new URL(request.url);
 
-    // ─── Routes ───
+    const tg = async (chatId, text) => {
+      await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
+      });
+    };
 
     if (request.method === 'GET' && url.pathname === '/setup') {
       const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/setWebhook`, {
@@ -16,8 +22,7 @@ export default {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: `${url.origin}/webhook` }),
       });
-      const j = await r.json();
-      return new Response(JSON.stringify(j), { headers: { 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify(await r.json()), { headers: { 'Content-Type': 'application/json' } });
     }
 
     if (request.method === 'GET' && url.pathname === '/') {
@@ -30,17 +35,12 @@ export default {
 
       const msg = update.message;
       const chatId = msg.chat.id;
-
       if (ALLOWED && String(msg.from.id) !== ALLOWED) return new Response('ok', { status: 200 });
 
       const text = msg.text || '';
 
       if (text === '/start') {
-        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: chatId, text: '👋 Отправь ссылку — сделаю пост на neversleep.chat' }),
-        });
+        await tg(chatId, '👋 Отправь ссылку — сделаю статью на neversleep.chat');
         return new Response('ok', { status: 200 });
       }
 
@@ -49,32 +49,34 @@ export default {
       if (cmd) payload = cmd[2].trim();
       if (!payload) return new Response('ok', { status: 200 });
 
-      // Call GitHub API — one single operation
-      const apiUrl = `https://api.github.com/repos/${GH_REPO}/actions/workflows/274114119/dispatches`;
+      // Step 1: отправляем в GitHub Actions
       const res = await fetch(
-        apiUrl,
+        `https://api.github.com/repos/${GH_REPO}/actions/workflows/274114119/dispatches`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${GH_TOKEN}`,
+            Authorization: `Bearer ${GH_TOKEN}`,
             'User-Agent': 'neversleep-bot',
-            'Accept': 'application/vnd.github+json',
+            Accept: 'application/vnd.github+json',
           },
           body: JSON.stringify({ ref: 'main', inputs: { source_url: payload, lang: 'ru' } }),
         }
       );
 
-      let status = '✅';
-      if (!res.ok) {
-        const body = await res.text().catch(() => '');
-        status = `❌ ${res.status}\nGH_REPO: ${GH_REPO}\n${body.slice(0, 300)}`;
-      }
+      if (res.ok) {
+        await tg(chatId,
+          `⏳ Запускаю генерацию...
 
-      await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text: status }),
-      });
+1/3 🔍 Получаю контент
+2/3 🤖 Генерирую пост
+3/3 📝 Сохраняю и коммичу
+
+Результат придет в этот чат от GitHub сразу после завершения.`
+        );
+      } else {
+        const body = await res.text().catch(() => '');
+        await tg(chatId, `❌ Ошибка запуска: ${res.status}`);
+      }
 
       return new Response('ok', { status: 200 });
     }
