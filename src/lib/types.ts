@@ -20,7 +20,7 @@ export const PostFrontmatterSchema = z.object({
   media: z.enum(['text', 'image', 'video', '3d']).default('text'),
   languages: z.array(z.string()).default(['ru']),
   date: z.coerce.date(),
-  source: z.string().url().optional(),
+  source: z.string().optional(),
   cover: z.string().url().or(z.string().regex(/^\//)).optional(),
   is_editorial: z.boolean().default(true),
 });
