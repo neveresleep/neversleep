@@ -45,5 +45,5 @@ jobs:
           git config user.name "neversleep-bot"
           git config user.email "bot@neversleep.chat"
           git add -A
-          git diff --staged --quiet || git commit -m "new post [skip vercel]"
+          git diff --staged --quiet || git commit -m "new post"
           git push
