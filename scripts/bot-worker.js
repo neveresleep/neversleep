@@ -56,9 +56,9 @@ export default {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${GH_TOKEN}`,
-            Accept: 'application/vnd.github+json',
-            'User-Agent': 'neversleep-bot/1.0',
+            'Authorization': `token ${GH_TOKEN}`,
+            'User-Agent': 'neversleep-bot',
+            'Accept': 'application/vnd.github+json',
           },
           body: JSON.stringify({ ref: 'main', inputs: { source_url: payload, lang: 'ru' } }),
         }
