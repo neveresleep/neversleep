@@ -29,24 +29,29 @@ function slugify(text) {
 
 async function fetchSource(raw) {
   const url = raw.trim();
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    console.log(`Fetching: ${url}`);
+  try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'neversleep-bot/1.0' },
+      signal: AbortSignal.timeout(5000),
     });
     const html = await res.text();
 
-    // Try to find text content — look for <title>, <meta>, twitter cards
     const title = html.match(/<title>([^<]+)<\/title>/)?.[1] || '';
     const desc = html.match(/<meta name="description" content="([^"]+)"/)?.[1]
       || html.match(/<meta property="og:description" content="([^"]+)"/)?.[1]
       || '';
-    const twitterText = html.match(/<meta name="twitter:description" content="([^"]+)"/)?.[1] || '';
-    const bodyText = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 4000);
+    const bodyText = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 3000);
 
-    return `Title: ${title}\nDescription: ${desc}${twitterText ? '\nTweet: ' + twitterText : ''}\n\nBody:\n${bodyText}`;
+    // If scraping gave nothing useful (typical for X/Twitter, YouTube), pass URL directly
+    if (!title && !desc) {
+      return `URL: ${url}\n(Source page returned minimal content — use your knowledge of this content)`;
+    }
+
+    return `URL: ${url}\nTitle: ${title}\nDescription: ${desc}\n\nBody:\n${bodyText}`;
+  } catch {
+    // Network error — still pass URL, LLM knows it
+    return `URL: ${url}\n(Page could not be fetched — use your general knowledge of this content)`;
   }
-  return raw;
 }
 
 // ---------------------------------------------------------------------------
